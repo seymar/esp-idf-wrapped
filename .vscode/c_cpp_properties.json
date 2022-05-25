@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "hello",
+            "includePath": [
+                "${config.idf.espIdfPath}/components/**",
+                "${workspaceFolder}/apps/hello"
+            ],
+            "browse": {
+                "path": [
+                    "${config.idf.espIdfPath}/components/**",
+                    "${config.idf.espIdfPathWin}/components/**",
+                    "${workspaceFolder}"
+                ]
+            },
+            "defines": [
+                "CONFIG_HTTPD_WS_SUPPORT=y"
+            ],
+            "compilerPath": "${config.idf.espIdfCompilerPath}/xtensa-esp32-elf-gcc",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+        }
+    ],
+    "version": 4
+}

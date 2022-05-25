@@ -1,0 +1,19 @@
+{
+    "files.associations": {
+        "freertos.h": "c",
+        "protocol_examples_common.h": "c",
+        "uart_hal.h": "c",
+        "uart_ll.h": "c",
+        "uart_types.h": "c",
+        "esp_intr_alloc.h": "c",
+        "uart.h": "c",
+        "webserver.h": "c",
+        "network.h": "c",
+        "esp_netif.h": "c",
+        "pixeltypes.h": "c"
+    },
+    "idf": {
+        "espIdfPath": "/Users/seymar/dev/common/esp-idf-4.4",
+        "espIdfCompilerPath": "/Users/seymar/dev/common/esp-idf-4.4-tools/tools/xtensa-esp32-elf/esp-2021r2-8.4.0/xtensa-esp32-elf/bin"
+    }
+}
