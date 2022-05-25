@@ -7,7 +7,7 @@ APP_PATH ?= apps/$(APP)
 APP_PATH := $(abspath $(APP_PATH))
 
 # Include ESP-IDF into the project
-include mk/esp-idf-4.4.mk
+include mk/esp-idf.mk
 
 install:
 

@@ -5,7 +5,10 @@ $(if $Q,,$(info mk/config.mk:))
 include config.mk
 config.mk: config.example.mk; cp $< $@
 
+
 ## Process common dependencies path, make absolute and strip trailing slash
-CDP = $(COMMON_DEPS_PATH)
-CDP := $(abspath $(CDP))
-CDP := $(CDP:%/=%)
+COMMON_DEPS_PATH := $(abspath $(COMMON_DEPS_PATH))
+COMMON_DEPS_PATH := $(COMMON_DEPS_PATH:%/=%)
+
+$(if $(wildcard $(COMMON_DEPS_PATH)),, \
+	$(error COMMON_DEPS_PATH not found $(COMMON_DEPS_PATH)))
