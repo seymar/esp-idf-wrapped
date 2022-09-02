@@ -1,59 +1,44 @@
 ### ESP-IDF installation
 
-## Configuration variable defaults
-IDF_VERSION	   ?= v4.4.1
-IDF_PATH       ?= $(COMMON_DEPS_PATH)/esp-idf-$(IDF_VERSION)
-IDF_TOOLS_PATH ?= $(COMMON_DEPS_PATH)/esp-idf-$(IDF_VERSION)-tools
+## Configuration variables
+idf_zip          := https://dl.espressif.com/github_assets/espressif/esp-idf/releases/download/v4.4.2/esp-idf-v4.4.2.zip
+idf_version      := v4.4.2
+IDF_PATH         ?= $(COMMON_DEPS_PATH)/esp-idf-$(idf_version)
+IDF_TOOLS_PATH   ?= $(COMMON_DEPS_PATH)/esp-idf-$(idf_version)-tools
+IDF_TOOLS_XTENSA ?= $(IDF_TOOLS_PATH)/tools/xtensa-esp32-elf/esp-2021r2-patch3-8.4.0/xtensa-esp32-elf/bin
+ESP_PYTHON       := $(IDF_TOOLS_PATH)/python_env/idf4.4_py3.10_env/bin/python
+IDF_PY            = $(ESP_PYTHON) $(IDF_PATH)/tools/idf.py
+ESP_TARGETS      ?= esp32
 
-$(if $Q,,$(info IDF_PATH = $(IDF_PATH)))
-$(if $Q,,$(info IDF_TOOLS_PATH = $(IDF_TOOLS_PATH)))
+$(foreach v,IDF_TOOLS_PATH IDF_TOOLS_XTENSA ESP_PYTHON IDF_PY, \
+	$(info $(shell printf "%-16s\n%s" $v $($v))))
 
 ## Only check installation when not installing
 ifneq ($(MAKECMDGOALS),install)
-
 ## Check configuration variables
 $(if $(wildcard $(IDF_PATH)),, \
-	$(error IDF_PATH directory not found $(IDF_PATH)))
+	$(info Path not found: IDF_PATH = $(IDF_PATH)) \
+	$(info `make install` to install it) \
+	$(error ^))
+endif
 
-$(if $(wildcard $(IDF_TOOLS_PATH)),, \
-	$(error IDF_TOOLS_PATH directory not found not found: $(IDF_TOOLS_PATH)))
-
+export IDF_PATH # Configures ./install.sh
+export IDF_TOOLS_PATH # Configures ./install.sh 
+export IDF_CCACHE_ENABLE := 1 # Export for idf.py
+export ESPPORT ?= $(PORT)
+export ESPBAUD ?= 2000000
+ifeq (,$(findstring $(IDF_TOOLS_XTENSA),$(PATH)))
+export PATH := $(IDF_TOOLS_XTENSA):$(PATH)
 endif
 
 ## Installation rules
-ESP_IDF_ZIP ?= https://dl.espressif.com/github_assets/espressif/esp-idf/releases/download/v4.4.1/esp-idf-v4.4.1.zip
-ESP_IDF_ZIP_DST := $(COMMON_DEPS_PATH)/esp-idf-$(IDF_VERSION).zip
-.PHONY: esp-idf
-.NOTPARALLEL:
-esp-idf: $(IDF_PATH) esp-idf-tools
-$(IDF_PATH): $(ESP_IDF_ZIP_DST)
-	unzip -n $< -d $(COMMON_DEPS_PATH)
-$(ESP_IDF_ZIP_DST):
-	wget $(ESP_IDF_ZIP) -P $(@D)
-
-# Export for ./install.sh
-export IDF_PATH
-export IDF_TOOLS_PATH
-.PHONY:
-esp-idf-tools: $(IDF_TOOLS_PATH)
-
-$(IDF_TOOLS_PATH):
-	(cd $(IDF_PATH) && . ./install.sh esp32)
-
-# Add ESP-IDF to the install target
 install: esp-idf
-
-# Export paths for command targets
-IDF_PY := $(IDF_PATH)/tools/idf.py
-$(info IDF_PY = $(IDF_PY))
-
-# Export tools 
-IDF_TOOLS_XTENSA := $(realpath $(IDF_TOOLS_PATH)/tools/xtensa-esp32-elf/esp-2021r2-8.4.0/xtensa-esp32-elf/bin)
-$(info IDF_TOOLS_XTENSA = $(IDF_TOOLS_XTENSA))
-export PATH := $(IDF_TOOLS_XTENSA):$(PATH)
-
-
-# Set idf.py flags through environment variables
-export IDF_CCACHE_ENABLE := 1
-export ESPPORT := $(PORT)
-export ESPBAUD := 2000000
+$(IDF_PATH).zip:
+	wget $(idf_zip) -P $(@D)
+# Unzip `-n` not overwriting files, -x "*.git/*/" excluding git folders
+$(IDF_PATH): $(IDF_PATH).zip
+	unzip -n $< -d $(COMMON_DEPS_PATH) -x "*.git/*"
+# Install
+esp-idf: $(IDF_PATH)
+	(cd $(IDF_PATH) && . ./install.sh $(ESP_TARGETS))
+	@printf "\033[4A\033[K" # Remove 'export.sh' message

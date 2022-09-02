@@ -1,7 +1,7 @@
 SHELL=bash
 .DEFAULT_GOAL := build
 
-include mk/init_config.mk
+include mk/init-config.mk
 
 APP_PATH ?= apps/$(APP)
 APP_PATH := $(abspath $(APP_PATH))
@@ -10,6 +10,7 @@ APP_PATH := $(abspath $(APP_PATH))
 include mk/esp-idf.mk
 
 install:
+	$(info Installation succesful)
 
 # ESP-IDF: Set current working directory
 IDF_PY_FLAGS := $(IDF_PY_FLAGS) -C $(APP_PATH)
@@ -17,7 +18,7 @@ IDF_PY_FLAGS := $(IDF_PY_FLAGS) -C $(APP_PATH)
 # ESP-IDF: Command targets
 .PHONY: build
 b: build
-build:
+build:;
 	$(IDF_PY) $(IDF_PY_FLAGS) build
 
 c: clean

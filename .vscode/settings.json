@@ -13,7 +13,8 @@
         "pixeltypes.h": "c"
     },
     "idf": {
-        "espIdfPath": "/Users/seymar/dev/common/esp-idf-4.4",
-        "espIdfCompilerPath": "/Users/seymar/dev/common/esp-idf-4.4-tools/tools/xtensa-esp32-elf/esp-2021r2-8.4.0/xtensa-esp32-elf/bin"
+        "espIdfPath": "/Users/seymar/dev/common/esp-idf-4.4.2",
+        "espIdfPathWin": "/Users/seymar/dev/common/esp-idf-4.4.2",
+        "espIdfCompilerPath": "/Users/seymar/dev/common/esp-idf-v4.4.2-tools/tools/xtensa-esp32-elf/esp-2021r2-patch3-8.4.0/xtensa-esp32-elf/bin"
     }
 }
